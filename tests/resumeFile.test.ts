@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createResume } from '../src/data';
+import { createResume, templates } from '../src/data';
 import {
   checkFileSize,
   MAX_RESUME_BYTES,
@@ -45,6 +45,25 @@ test('ordinary Markdown stays untouched until first edited save adds metadata', 
   assert.equal(resume.frontmatter, undefined);
   assert.equal(resume.content, source);
   assert.equal(parseResumeFile(serializeResumeFile(resume)).content, source);
+});
+
+test('every template survives file export, import, and subsequent editing', () => {
+  for (const template of templates) {
+    const resume = createResume(template.name);
+    resume.settings = {
+      ...resume.settings,
+      template: template.id,
+      color: template.color,
+      font: template.font,
+    };
+    resume.settings.headings.h2.before = 4;
+    const restored = parseResumeFile(serializeResumeFile(resume));
+    assert.deepEqual(restored.settings, resume.settings, template.id);
+    restored.content += '\n## 新增内容\n正文\n';
+    const edited = parseResumeFile(serializeResumeFile(restored));
+    assert.deepEqual(edited.settings, resume.settings, template.id);
+    assert.equal(edited.content, restored.content, template.id);
+  }
 });
 
 test('unrelated YAML fields and nested unknown settings and comments survive edits', () => {

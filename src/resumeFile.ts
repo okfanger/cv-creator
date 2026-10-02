@@ -1,5 +1,5 @@
 import { isMap, parseDocument, Document } from 'yaml';
-import { createResume, defaults, type Resume, type Settings } from './data';
+import { createResume, defaults, templateIds, type Resume, type Settings } from './data';
 import { headingFields, headingLevels, normalizeHeadings } from './headings';
 import { normalizePhoto } from './photo';
 import type { IconLibrary } from './icons';
@@ -28,7 +28,7 @@ function settingsFrom(value: unknown): Settings {
   if (!record(value)) fail('qingjian.settings 必须是键值映射');
   const s = value as Record<string, unknown>;
   for (const [key, values] of [
-    ['template', ['minimal', 'classic', 'modern']],
+    ['template', templateIds],
     ['font', ['sans', 'serif', 'heiti', 'kaiti', 'mono']],
   ] as const) {
     if (s[key] !== undefined && !values.includes(s[key] as never)) fail(`无效的 ${key} 配置`);

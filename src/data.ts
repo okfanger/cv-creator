@@ -1,8 +1,18 @@
 import { defaultHeadings, type HeadingSettings } from './headings';
 import type { IconLibrary } from './icons';
 
+export const templateIds = [
+  'minimal',
+  'classic',
+  'modern',
+  'editorial',
+  'technical',
+  'formal',
+] as const;
+export type TemplateId = (typeof templateIds)[number];
+
 export type Settings = {
-  template: 'minimal' | 'classic' | 'modern';
+  template: TemplateId;
   color: string;
   fontSize: number;
   lineHeight: number;
@@ -141,13 +151,21 @@ export const createResume = (title = '林知夏 · 前端开发工程师'): Resu
   settings: { ...defaults, headings: defaultHeadings() },
   updatedAt: Date.now(),
 });
-export const templates = [
+export const templates: {
+  id: TemplateId;
+  name: string;
+  description: string;
+  tag: string;
+  color: string;
+  font: Settings['font'];
+}[] = [
   {
     id: 'minimal' as const,
     name: '自然简约',
     description: '清晰层次，让内容自己说话',
     tag: '当前推荐',
     color: '#2c584b',
+    font: 'sans',
   },
   {
     id: 'classic' as const,
@@ -155,6 +173,7 @@ export const templates = [
     description: '沉稳衬线，适合专业与学术',
     tag: '经典',
     color: '#373b45',
+    font: 'serif',
   },
   {
     id: 'modern' as const,
@@ -162,5 +181,30 @@ export const templates = [
     description: '鲜明标题，突出你的专业度',
     tag: '现代',
     color: '#3b64a3',
+    font: 'sans',
+  },
+  {
+    id: 'editorial',
+    name: '编辑雅致',
+    description: '衬线姓名与侧边标题，适合设计与内容',
+    tag: '新增',
+    color: '#8a5a46',
+    font: 'sans',
+  },
+  {
+    id: 'technical',
+    name: '技术极客',
+    description: '等宽字体与虚线分隔，适合技术岗位',
+    tag: '新增',
+    color: '#3b64a3',
+    font: 'mono',
+  },
+  {
+    id: 'formal',
+    name: '商务正式',
+    description: '居中姓名与双线标题，适合商务与管理',
+    tag: '新增',
+    color: '#373b45',
+    font: 'serif',
   },
 ];

@@ -50,7 +50,7 @@ import HeadingControls from './HeadingControls';
 import IconControls from './IconControls';
 import { normalizeHeadings } from './headings';
 import { normalizePhoto } from './photo';
-import { createResume, defaults, templates, type Resume, type Settings } from './data';
+import { createResume, defaults, templates, templateIds, type Resume, type Settings } from './data';
 import { useFileWorkspace, decodeResume, encodeResume } from './useFileWorkspace';
 import FileWorkspacePanel, { downloadFile } from './FileWorkspacePanel';
 import { checkFileSize } from './resumeFile';
@@ -75,6 +75,9 @@ function load(): Resume[] {
           settings: {
             ...defaults,
             ...x.settings,
+            template: templateIds.includes(x.settings.template)
+              ? x.settings.template
+              : defaults.template,
             headings: normalizeHeadings(x.settings.headings),
           },
           iconLibrary:
@@ -95,12 +98,12 @@ const editorTheme = EditorView.theme({
   '&': { height: '100%', fontSize: '13px', backgroundColor: '#fff' },
   '.cm-scroller': {
     fontFamily: '"SFMono-Regular", Consolas, "PingFang SC", monospace',
-    lineHeight: '1.95',
+    lineHeight: '1.65',
     overflow: 'auto',
   },
-  '.cm-content': { padding: '22px 0 100px', caretColor: '#2c584b' },
-  '.cm-line': { padding: '0 24px 0 12px' },
-  '.cm-gutters': { background: '#fff', border: 'none', color: '#c4c7c4', minWidth: '42px' },
+  '.cm-content': { padding: '12px 0 60px', caretColor: '#2c584b' },
+  '.cm-line': { padding: '0 16px 0 8px' },
+  '.cm-gutters': { background: '#fff', border: 'none', color: '#c4c7c4', minWidth: '36px' },
   '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: '#f5f7f3' },
   '.cm-selectionBackground': { background: '#dce8dd !important' },
   '&.cm-focused': { outline: 'none' },
@@ -350,7 +353,7 @@ export default function App() {
     setSaved(false);
     if (!files.record) notify(duplicate ? '已创建简历副本' : '新简历已创建');
   };
-  const currentTemplate = templates.find((x) => x.id === settings.template)!;
+  const currentTemplate = templates.find((x) => x.id === settings.template) || templates[0];
   const wordCount = resume.content.replace(/[#*`|:\[\]()>-]/g, '').replace(/\s/g, '').length;
 
   return (
@@ -734,9 +737,8 @@ export default function App() {
           ) : (
             <fieldset className="settings-body edit-settings" disabled={fileReadOnly || files.busy}>
               <div className="settings-intro">
-                <span>DESIGN YOUR RESUME</span>
-                <h2>让表达，多一点个性。</h2>
-                <p>调整每一个细节，找到适合你的样子。</p>
+                <h2>排版与样式</h2>
+                <p>主题、字体、标题与照片</p>
               </div>
               <div className="setting-group">
                 <label>
@@ -965,12 +967,13 @@ export default function App() {
               <button
                 className={`template-card ${settings.template === t.id ? 'selected' : ''}`}
                 key={t.id}
+                aria-pressed={settings.template === t.id}
                 disabled={fileReadOnly || files.busy}
                 onClick={() => {
                   updateSettings({
                     template: t.id,
                     color: t.color,
-                    font: t.id === 'classic' ? 'serif' : 'sans',
+                    font: t.font,
                   });
                   setModal(null);
                   notify(`已应用「${t.name}」主题`);

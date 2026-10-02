@@ -8,6 +8,10 @@
   --muted: #8d938e;
   --border: #e9ece7;
   --paper: #fff;
+  --ui-header-height: 52px;
+  --ui-toolbar-height: 40px;
+  --ui-rail-width: 60px;
+  --ui-space: 16px;
 }
 * {
   box-sizing: border-box;
@@ -57,14 +61,14 @@ a {
   overflow: hidden;
 }
 .header {
-  height: 76px;
+  height: var(--ui-header-height);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--border);
-  padding: 0 28px;
+  padding: 0 var(--ui-space);
   background: white;
-  gap: 36px;
+  gap: 24px;
 }
 .brand {
   display: flex;
@@ -74,7 +78,7 @@ a {
   padding: 0;
 }
 .brand strong {
-  font-size: 23px;
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: 3px;
 }
@@ -169,7 +173,7 @@ a {
 }
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 .button {
@@ -177,7 +181,7 @@ a {
   gap: 8px;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;
+  padding: 7px 12px;
   font-size: 12px;
   font-weight: 500;
   border: 1px solid #e1e5dd;
@@ -190,7 +194,7 @@ a {
 }
 .button.quiet {
   border: 0;
-  padding: 10px 12px;
+  padding: 7px 10px;
   color: #687166;
 }
 .button.primary {
@@ -207,31 +211,31 @@ a {
   flex: 1;
 }
 .rail {
-  width: 72px;
+  width: var(--ui-rail-width);
   flex-shrink: 0;
   border-right: 1px solid var(--border);
   background: #fff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 22px 10px 20px;
+  padding: 12px 6px;
 }
 .rail-top,
 .rail-bottom {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   align-items: center;
 }
 .rail-item {
   display: flex;
-  width: 50px;
-  min-height: 57px;
+  width: 46px;
+  min-height: 46px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 7px;
-  border-radius: 8px;
+  gap: 4px;
+  border-radius: 6px;
   color: #8a9389;
   transition: 0.15s;
 }
@@ -266,6 +270,7 @@ a {
 .editor-pane {
   width: 45%;
   max-width: 680px;
+  min-width: 0;
   background: #fff;
   flex-shrink: 0;
   border-right: 1px solid #dfe4da;
@@ -275,18 +280,18 @@ a {
 }
 .pane-header,
 .preview-toolbar {
-  height: 59px;
+  height: var(--ui-toolbar-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  padding: 0 24px;
+  padding: 0 var(--ui-space);
   flex-shrink: 0;
 }
 .tabs {
   display: flex;
   height: 100%;
-  gap: 26px;
+  gap: 20px;
 }
 .tabs button {
   font-size: 12px;
@@ -319,13 +324,16 @@ a {
   border-radius: 4px;
 }
 .format-bar {
-  height: 46px;
+  height: 36px;
   border-bottom: 1px solid #f0f2ed;
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 0 18px;
+  padding: 0 12px;
   flex-shrink: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
 .format-bar button {
   width: 29px;
@@ -335,6 +343,7 @@ a {
   justify-content: center;
   color: #6f796e;
   border-radius: 4px;
+  flex-shrink: 0;
 }
 .format-bar button:hover {
   color: var(--green);
@@ -379,9 +388,9 @@ a {
 .writing-tip {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 15px 20px;
-  margin: 0 20px 18px;
+  gap: 8px;
+  padding: 8px 10px;
+  margin: 0 12px 10px;
   background: #f6f7f0;
   border: 1px solid #e9ecdf;
   border-radius: 6px;
@@ -399,6 +408,7 @@ a {
   font-weight: 500;
 }
 .writing-tip p {
+  display: none;
   margin: 5px 0 0;
   font-size: 10px;
   color: #a1a796;
@@ -412,13 +422,13 @@ a {
 }
 .editor-status,
 .preview-status {
-  height: 35px;
+  height: 28px;
   flex-shrink: 0;
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 22px;
+  padding: 0 var(--ui-space);
   font-size: 10px;
   color: #9ca398;
 }
@@ -446,7 +456,7 @@ a {
   background: #f0f2ec;
 }
 .preview-toolbar {
-  padding: 0 25px;
+  padding: 0 var(--ui-space);
   background: #f7f8f4;
   border-color: #e5e9df;
 }
@@ -484,7 +494,7 @@ a {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 25px 40px 0;
+  padding: 16px 24px 0;
   scrollbar-width: thin;
   scrollbar-color: #d6ddce transparent;
 }
@@ -493,7 +503,7 @@ a {
   justify-content: space-between;
   font-size: 9px;
   color: #a1a996;
-  margin: 0 auto 13px;
+  margin: 0 auto 8px;
   max-width: 715px;
   letter-spacing: 0.5px;
 }
@@ -698,8 +708,8 @@ a {
 .photo-settings {
   border-top: 1px solid #e5eadf;
   border-bottom: 1px solid #e5eadf;
-  padding: 23px 0;
-  margin: 4px 0 26px;
+  padding: 16px 0;
+  margin: 4px 0 16px;
 }
 .photo-settings-heading {
   display: flex;
@@ -769,7 +779,7 @@ a {
   color: #9bab8e;
 }
 .photo-control {
-  margin: 19px 0 0;
+  margin: 12px 0 0;
 }
 .control-label {
   font-size: 11px;
@@ -934,6 +944,66 @@ a {
   right: 0;
   height: 7px;
 }
+/* Additional templates share the same Markdown and pagination flow. */
+.template-editorial h1 {
+  font-family: Georgia, 'Songti SC', 'SimSun', serif;
+  letter-spacing: 2px;
+}
+.template-editorial h2 {
+  border-bottom: 0;
+  border-left: 4px solid var(--resume-color);
+  padding-left: 12px;
+  background: color-mix(in srgb, var(--resume-color) 5%, white);
+  --heading-padding-top: var(--h2-padding);
+}
+.template-editorial h3 {
+  color: var(--resume-color);
+}
+.template-editorial .paper-accent {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 8px;
+  background: var(--resume-color);
+}
+.template-technical h1 {
+  letter-spacing: 0;
+}
+.template-technical h2 {
+  border-bottom-style: dashed;
+  letter-spacing: 0;
+}
+.template-technical h2::before {
+  content: '> ';
+  opacity: 0.6;
+}
+.template-technical h3 {
+  color: var(--resume-color);
+}
+.template-technical .column-right {
+  font-variant-numeric: tabular-nums;
+}
+.template-formal h1,
+.template-formal h1 + p,
+.template-formal h1 + p + p,
+.template-formal h1 + p + p + p {
+  text-align: center;
+}
+.template-formal h1 {
+  letter-spacing: 6px;
+}
+.template-formal h2 {
+  border-top: 1px solid var(--resume-color);
+  border-bottom: 3px double var(--resume-color);
+  text-align: center;
+  letter-spacing: 3px;
+  --heading-padding-top: var(--h2-padding);
+}
+.template-formal h3 {
+  font-weight: 700;
+}
 /* Explicit heading formats take precedence over theme and column edge spacing. */
 .resume-content.resume-content :is(h1, h2, h3, h4, h5, h6) {
   font-size: var(--heading-size);
@@ -995,7 +1065,7 @@ a {
   gap: 7px;
   font-size: 9px;
   color: #a8b09f;
-  margin: 22px 0;
+  margin: 12px 0;
 }
 .preview-status {
   background: #f7f8f4;
@@ -1014,7 +1084,7 @@ a {
 }
 .settings-body {
   overflow: auto;
-  padding: 26px 30px 32px;
+  padding: 16px 20px 24px;
   scrollbar-width: thin;
 }
 .settings-intro > span {
@@ -1023,19 +1093,19 @@ a {
   letter-spacing: 2px;
 }
 .settings-intro h2 {
-  font-size: 21px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
   color: #435941;
   letter-spacing: 1px;
-  margin: 12px 0 9px;
+  margin: 0 0 6px;
 }
 .settings-intro p {
   font-size: 11px;
   color: #98a18e;
-  margin: 0 0 30px;
+  margin: 0 0 18px;
 }
 .setting-group {
-  margin: 0 0 25px;
+  margin: 0 0 16px;
 }
 .setting-group > label {
   display: flex;
@@ -1043,7 +1113,7 @@ a {
   justify-content: space-between;
   font-size: 12px;
   color: #677360;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .setting-group > label > span,
 .setting-group > label > button {
@@ -1056,7 +1126,7 @@ a {
 .current-theme {
   border: 1px solid #e2e8db;
   border-radius: 6px;
-  padding: 14px;
+  padding: 10px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -1115,7 +1185,7 @@ a {
 }
 .setting-group select {
   width: 100%;
-  padding: 10px 12px;
+  padding: 7px 10px;
   font-size: 12px;
   border: 1px solid #e2e8db;
   border-radius: 5px;
@@ -1132,7 +1202,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 17px 14px;
+  padding: 12px;
   background: #f4f7ef;
   border: 1px solid #e8eddf;
   border-radius: 6px;
@@ -1221,7 +1291,7 @@ a {
   max-height: 85dvh;
   border: 1px solid #e5e9df;
   border-radius: 12px;
-  padding: 30px;
+  padding: 20px;
   background: #fff;
   color: #3c4838;
   box-shadow: 0 20px 80px #20301e20;
@@ -1238,7 +1308,7 @@ a {
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 26px;
+  margin-bottom: 18px;
 }
 .modal-heading h2 {
   font-size: 21px;
@@ -1255,12 +1325,12 @@ a {
 .template-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  gap: 12px;
 }
 .template-card {
   border: 1px solid #e5e9df;
   border-radius: 8px;
-  padding: 16px;
+  padding: 12px;
   background: #f9faf6;
   text-align: left;
 }
@@ -1273,12 +1343,14 @@ a {
 }
 .mini-paper {
   aspect-ratio: 210/297;
-  padding: 20px 15px;
+  width: 124px;
+  max-width: 100%;
+  padding: 12px 10px;
   background: #fff;
   box-shadow: 0 4px 8px #24311b0b;
   border: 1px solid #eef0e9;
   font-family: 'PingFang SC', sans-serif;
-  margin-bottom: 17px;
+  margin: 0 auto 12px;
 }
 .mini-paper strong {
   display: block;
@@ -1296,7 +1368,7 @@ a {
   height: 1px;
   width: 55%;
   background: #dbe0d4;
-  margin: 9px 0 14px;
+  margin: 6px 0 8px;
 }
 .mini-paper b {
   display: block;
@@ -1304,13 +1376,13 @@ a {
   color: var(--mini-color);
   font-size: 6px;
   padding-bottom: 4px;
-  margin: 13px 0 8px;
+  margin: 8px 0 5px;
 }
 .mini-paper i {
   height: 3px;
   background: #e3e8dd;
   display: block;
-  margin: 6px 0;
+  margin: 4px 0;
   width: 100%;
 }
 .mini-paper i.short {
@@ -1336,6 +1408,43 @@ a {
   padding: 4px;
   border-bottom: 0;
   border-left: 2px solid var(--mini-color);
+}
+.mini-editorial {
+  border-left: 3px solid var(--mini-color);
+}
+.mini-editorial strong {
+  font-family: Georgia, 'Songti SC', serif;
+}
+.mini-editorial b {
+  border-bottom: 0;
+  border-left: 2px solid var(--mini-color);
+  padding-left: 4px;
+  background: color-mix(in srgb, var(--mini-color) 5%, white);
+}
+.mini-technical {
+  font-family: Menlo, Consolas, monospace;
+}
+.mini-technical strong {
+  letter-spacing: 0;
+}
+.mini-technical b {
+  border-bottom-style: dashed;
+}
+.mini-technical b::before {
+  content: '> ';
+}
+.mini-formal {
+  font-family: Georgia, 'Songti SC', serif;
+  text-align: center;
+}
+.mini-formal .mini-rule {
+  margin-left: auto;
+  margin-right: auto;
+}
+.mini-formal b {
+  border-top: 1px solid var(--mini-color);
+  border-bottom: 3px double var(--mini-color);
+  padding-top: 3px;
 }
 .template-card-info {
   display: flex;
@@ -1509,7 +1618,7 @@ a {
 .export-note {
   font-size: 10px;
   color: #a1aa94;
-  margin: 19px 0 0;
+  margin: 12px 0 0;
   line-height: 1.8;
 }
 @media (min-width: 1500px) {
@@ -1517,14 +1626,14 @@ a {
     width: 43%;
   }
   .header {
-    gap: 46px;
+    gap: 28px;
   }
   .document-info input {
     width: 280px;
   }
   .preview-scroll {
-    padding-left: 55px;
-    padding-right: 55px;
+    padding-left: 32px;
+    padding-right: 32px;
   }
   .paper-meta {
     max-width: 715px;
@@ -1533,7 +1642,7 @@ a {
 @media (max-width: 1200px) {
   .header {
     gap: 22px;
-    padding: 0 22px;
+    padding: 0 var(--ui-space);
   }
   .brand-en,
   .brand-divider {
@@ -1562,20 +1671,20 @@ a {
     padding: 0 13px;
   }
   .writing-tip {
-    margin: 0 15px 15px;
-    padding: 12px;
+    margin: 0 12px 10px;
+    padding: 8px 10px;
   }
   .preview-toolbar {
     padding: 0 20px;
   }
   .settings-body {
-    padding: 25px;
+    padding: 16px 20px;
   }
   .brand strong {
     font-size: 21px;
   }
   .rail {
-    width: 65px;
+    width: var(--ui-rail-width);
     padding-left: 7px;
     padding-right: 7px;
   }
@@ -1619,7 +1728,7 @@ a {
     min-height: 420px;
   }
   .header {
-    height: 64px;
+    height: var(--ui-header-height);
     padding: 0 14px;
     gap: 14px;
   }
@@ -1670,7 +1779,7 @@ a {
   }
   .rail-item {
     width: 43px;
-    min-height: 50px;
+    min-height: 46px;
     gap: 5px;
   }
   .rail-item svg {
@@ -1699,7 +1808,7 @@ a {
   }
   .pane-header,
   .preview-toolbar {
-    height: 51px;
+    height: 44px;
   }
   .md-pill {
     display: flex;
@@ -1712,7 +1821,7 @@ a {
     width: 28px;
   }
   .writing-tip {
-    margin: 0 13px 13px;
+    margin: 0 12px 10px;
   }
   .preview-scroll {
     padding: 20px 28px 0;
@@ -1789,7 +1898,7 @@ a {
     gap: 8px;
   }
   .settings-body {
-    padding: 25px 22px;
+    padding: 16px;
   }
   .preview-focus .preview-scroll {
     padding-left: 28px;
@@ -1887,7 +1996,7 @@ a {
 }
 .heading-tabs button {
   flex: 1;
-  padding: 8px 0;
+  padding: 6px 0;
   border: 1px solid #e1e5dd;
   border-radius: 6px;
   font-size: 12px;
@@ -1929,7 +2038,7 @@ a {
   width: 78px;
   border: 1px solid #dce2d8;
   border-radius: 6px;
-  padding: 7px 8px;
+  padding: 5px 8px;
   background: white;
 }
 .heading-actions {

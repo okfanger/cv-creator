@@ -1,0 +1,187 @@
+# 轻简 / Qingjian — Markdown Resume Format
+
+> A local-first resume editor. A portable resume is one UTF-8 Markdown file containing optional YAML frontmatter and a Markdown body. This document defines the implemented `qingjian.version: 1` dialect for third-party agents.
+
+## References
+
+- [Project README](https://github.com/okfanger/cv-creator/blob/main/README.md): editor features, file synchronization and export instructions.
+- [File parser and serializer](https://github.com/okfanger/cv-creator/blob/main/src/resumeFile.ts): authoritative validation and metadata handling.
+- [Markdown renderer](https://github.com/okfanger/cv-creator/blob/main/src/markdown.ts): authoritative column, pagebreak and icon grammar.
+- [Three-column example](https://github.com/okfanger/cv-creator/blob/main/examples/three-column.md): layout example.
+- [Heading and icon example](https://github.com/okfanger/cv-creator/blob/main/examples/heading-icons.md): body syntax example.
+
+## Instructions for agents
+
+When asked to create or edit a Qingjian resume, produce an actual `.md` file in the format below. Put YAML at the very beginning, followed by the body. Do not wrap the whole file in a code fence. Use supplied facts; do not invent employers, dates, credentials or results. Use visible placeholders for missing facts.
+
+When editing an existing file, preserve unrelated YAML fields, nested unknown fields, comments, photos, icon libraries and settings unless the user asks to change them. Preserve the existing format version. Unsupported versions and malformed YAML must be repaired or reported before writing. Do not replace an entire file just to edit one section. If the editor is open and also writing the file, concurrent edits can cause a conflict requiring the user to choose a version.
+
+Only the features documented here are supported. Do not invent directives such as `::: sidebar`, `::: columns`, `::: header`, `::: photo` or arbitrary HTML/CSS. A template changes presentation of the same body; it does not require a different Markdown grammar.
+
+## File envelope
+
+- Maximum file size: 16 MiB, measured in UTF-8 bytes, including embedded media.
+- Plain Markdown without frontmatter is valid and uses default settings. The editor adds metadata on the first edited save/export.
+- Frontmatter starts with `---` on the first line (an initial UTF-8 BOM is accepted). End it with another standalone `---` line. LF and CRLF are accepted.
+- YAML must be a mapping, with unique string keys. Quote hex colors (`'#2c584b'`), since an unquoted `#` starts a YAML comment.
+- If the `qingjian` mapping exists, `version: 1` is required. Other versions are rejected. `title` is an optional string; it names the document, independently of the body H1.
+- `settings`, `photo`, and `iconLibrary` are optional mappings under `qingjian`.
+- Unknown YAML fields are preserved by the editor but have no rendering effect. Saving may change indentation and quoting.
+- The web content editor displays only the Markdown body. Style controls edit frontmatter separately. Full Markdown export includes both.
+
+## Settings
+
+All settings below live under `qingjian.settings`. Missing fields use the defaults listed here; selecting a template ID in a file does not automatically select its suggested color or font.
+
+| Key | Accepted value | Default |
+| --- | --- | --- |
+| `template` | `minimal`, `classic`, `modern`, `editorial`, `technical`, `formal` | `minimal` |
+| `color` | Quoted six-digit hexadecimal color | `'#2c584b'` |
+| `fontSize` | Number, 10–18 px | `13` |
+| `lineHeight` | Number, 1–2.5 multiplier | `1.7` |
+| `margin` | Number, 24–72 px on all four sides | `48` |
+| `font` | `sans`, `heiti`, `serif`, `kaiti`, `mono` | `sans` |
+| `onePage` | Boolean | `false` |
+| `headings` | Optional mapping with `h1` through `h6` | See below |
+
+Fonts use locally installed fonts with fallbacks: `sans` is PingFang SC / Microsoft YaHei; `heiti` is Heiti / SimHei; `serif` is Songti / SimSun; `kaiti` is Kaiti / KaiTi; `mono` is Menlo / Consolas.
+
+### Template presets
+
+The template chooser applies the following template, color and font together. Agents can reproduce the preset by specifying all three fields; other layout settings remain independent.
+
+| ID | Name | Presentation | Suggested color | Suggested font |
+| --- | --- | --- | --- | --- |
+| `minimal` | 自然简约 | Left-aligned name, fine section rules | `'#2c584b'` | `sans` |
+| `classic` | 经典书页 | Centered identity, strong section rules | `'#373b45'` | `serif` |
+| `modern` | 现代蓝调 | Top accent, shaded sections with left rules | `'#3b64a3'` | `sans` |
+| `editorial` | 编辑雅致 | Serif name, page-edge accent, inset section headings | `'#8a5a46'` | `sans` |
+| `technical` | 技术极客 | Monospaced body, `>` section prefixes, dashed rules | `'#3b64a3'` | `mono` |
+| `formal` | 商务正式 | Centered identity and sections, double section rules | `'#373b45'` | `serif` |
+
+### Heading overrides
+
+Each `h1`–`h6` mapping accepts numeric `fontSize` (8–48 px), `lineHeight` (1–3 multiplier), `before` (0–80 px), `after` (0–80 px), and `padding` (0–20 px). Zero spacing is valid. Missing levels/fields use the defaults below. These values override the template's default heading size and vertical spacing, including inside columns and photo headers.
+
+| Level | fontSize | lineHeight | before | after | padding |
+| --- | --- | --- | --- | --- | --- |
+| h1 | 32 | 1.45 | 0 | 6 | 0 |
+| h2 | 16 | 1.5 | 22 | 11 | 6 |
+| h3 | 14 | 1.7 | 8 | 1 | 0 |
+| h4 | 14 | 1.7 | 8 | 4 | 0 |
+| h5 | 14 | 1.7 | 8 | 4 | 0 |
+| h6 | 14 | 1.7 | 8 | 4 | 0 |
+
+## Markdown body
+
+Use `# 姓名` for the name, the following paragraph for the role, and additional paragraphs for contact information. Use `##` for sections and `###` for an employer, project or school. Ordinary Markdown supports paragraphs, bold, italics, lists, links, blockquotes, code fences, horizontal rules and tables. Single line breaks in a paragraph become visible line breaks.
+
+Raw HTML is disabled and rendered output is sanitized; HTML cannot be used to inject layout or execute scripts. Tables support left, center and right alignment using `:---`, `:---:` and `---:` in the delimiter row. Cells without alignment markers default to left-aligned. Columns are another option for aligned resume details.
+
+### Columns: two or three per row
+
+A column starts with a standalone `::: left`, `::: center`, or `::: right` line, and ends with a standalone `:::` line. Both `:::left` and `::: left` are accepted (zero or one space after the opening colons). Each column contains ordinary Markdown. Always close each column; an unclosed directive is rendered as ordinary text.
+
+Adjacent column blocks form one row when they advance in the order `left → center → right`. Omit `center` for two columns. A new `left` starts a new row. Repeating a column or going backward in order also starts another row. Blank lines between column blocks do not break the row; an ordinary paragraph, heading, or pagebreak between them does. Prefer top-level, non-nested column blocks.
+
+The left column expands; center is centered; right is right-aligned and can occupy up to 35% of the row. Columns are kept together during pagination. Put long achievement lists outside columns to allow automatic splitting across pages.
+
+```md
+::: left
+### 公司名称
+职位 · 部门
+:::
+::: center
+全职
+:::
+::: right
+2023.07 — 至今
+杭州
+:::
+
+- 使用真实数据描述成果。
+```
+
+### Manual and automatic pagination
+
+Write `::: pagebreak` on its own line to request a page break. It is a single-line directive, with no closing `:::`. This exact spelling (including the space) is required. Directives in fenced code blocks remain literal.
+
+Pages are A4 (794 × 1123 CSS px; print 210 × 297 mm). Content automatically paginates. Long lists split at items and tables at rows; table headings repeat. Indivisible oversized blocks, including column rows, shrink to fit. `onePage: true` ignores manual breaks and scales all content to one page; large resumes may become hard to read.
+
+### Inline icons
+
+Use `icon:NAME` in text, headings, or link labels, for example `icon:mail hello@example.com` or `[icon:github GitHub](https://github.com)`. Separate icons from preceding words with whitespace or punctuation; do not concatenate them with identifiers or URL paths. Names are case-sensitive and start with a letter, followed by letters, digits, `_`, or `-`.
+
+Built-ins: `phone`, `mail`, `map-pin`, `github`, `graduation-cap`, `briefcase`, `award`, `trophy`, `calendar`, `link`, `globe`, `user`, `code`, `book-open`, `heart`, `star`.
+
+Aliases: `email` → `mail`, `location` → `map-pin`, `education` → `graduation-cap`, `work` → `briefcase`, `website` → `globe`, `tel` → `phone`.
+
+Unknown names stay literal. Inline code, fenced code, link destinations, autolinks and escaped `icon\:phone` stay literal. Custom icons take precedence over built-ins; `icon:xxx` and `icon:icon-xxx` can address a symbol with ID `icon-xxx`. Icons scale with the surrounding text.
+
+## Optional embedded media
+
+`qingjian.photo` accepts `source` (required inline `data:image/jpeg;base64,...`, `data:image/png;base64,...`, or `data:image/webp;base64,...` containing valid base64 characters), `name` (string), `enabled` (boolean, default true), `position` (`left` or `right`, default right), `shape` (`portrait`, `square`, `circle`, default portrait), `width` (64–144 px, default 96), `zoom` (1–3, default 1), `x` and `y` (0–100%, default 50). Numeric values outside these photo ranges are clamped. Portrait height is 4/3 of width. A remote image URL is not a valid photo source. Preserve actual embedded data; do not generate fake base64 placeholders in deliverable files.
+
+Enabled photos appear once, beside opening identity/contact blocks before the first H2–H6 or pagebreak, and their height participates in pagination. The UI accepts JPG/PNG/WebP uploads up to 10 MB and compresses them to JPEG with longest edge at most 960 px.
+
+`qingjian.iconLibrary` accepts required strings `name` and `source`. `source` must start with `<svg` after trimming and be at most 2,000,000 characters in a resume file. The UI imports SVG / SVG Symbol or extracts SVG from Iconfont JS (up to 2 MB and 300 icons); it never executes the JS. Exported files carry sanitized SVG. Preserve SVG and embedded photo data unless asked to remove them.
+
+## Complete valid example
+
+This is a complete portable resume. Replace placeholders with supplied facts.
+
+```md
+---
+qingjian:
+  version: 1
+  title: 你的姓名 · 前端开发
+  settings:
+    template: technical
+    color: '#3b64a3'
+    font: mono
+    fontSize: 13
+    lineHeight: 1.5
+    margin: 40
+    onePage: false
+    headings:
+      h2:
+        before: 16
+        after: 8
+        padding: 4
+---
+# 你的姓名
+前端开发工程师 · 城市
+
+icon:phone 电话 · icon:mail 邮箱
+[icon:github GitHub](https://github.com/your-account)
+
+## icon:user 关于我
+填写真实的经验与优势。
+
+## icon:briefcase 工作经历
+::: left
+### 公司名称
+职位 · 部门
+:::
+::: right
+开始年月 — 结束年月
+城市
+:::
+
+- 描述职责和成果；仅使用真实、可核实的数字。
+
+## icon:graduation-cap 教育背景
+::: left
+### 学校名称
+专业 · 学历
+:::
+::: right
+开始年月 — 结束年月
+:::
+
+::: pagebreak
+
+## icon:code 项目经历
+### 项目名称
+- 技术栈、个人职责与实际成果。
+```
