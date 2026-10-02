@@ -19,6 +19,8 @@ export type Resume = {
   photo?: ResumePhoto;
   iconLibrary?: IconLibrary;
   updatedAt: number;
+  /** Original YAML header, kept separately from the editable Markdown body. */
+  frontmatter?: string;
 };
 export type ResumePhoto = {
   source: string;

@@ -51,6 +51,9 @@ import IconControls from './IconControls';
 import { normalizeHeadings } from './headings';
 import { normalizePhoto } from './photo';
 import { createResume, defaults, templates, type Resume, type Settings } from './data';
+import { useFileWorkspace, decodeResume, encodeResume } from './useFileWorkspace';
+import FileWorkspacePanel, { downloadFile } from './FileWorkspacePanel';
+import { checkFileSize } from './resumeFile';
 
 const STORE = 'qingjian-resumes-v1';
 const ACTIVE = 'qingjian-active-v1';
@@ -157,6 +160,7 @@ function Modal({
 }
 
 export default function App() {
+  const files = useFileWorkspace();
   const [resumes, setResumes] = useState<Resume[]>(load);
   const [activeId, setActiveId] = useState(() => {
     try {
@@ -166,7 +170,9 @@ export default function App() {
       return resumes[0].id;
     }
   });
-  const resume = resumes.find((x) => x.id === activeId) || resumes[0];
+  const resume = files.active?.resume || resumes.find((x) => x.id === activeId) || resumes[0];
+  const fileReadOnly = !!files.active && !files.canWrite;
+  const fileLocked = !!files.active && (files.permission !== 'granted' || !files.writer);
   const [panel, setPanel] = useState<'content' | 'style'>('content');
   const [modal, setModal] = useState<'templates' | 'help' | 'documents' | 'export' | null>(null);
   const [saved, setSaved] = useState(false);
@@ -185,12 +191,17 @@ export default function App() {
   const zoom = zoomOption === 'auto' ? autoZoom : Number(zoomOption);
   const update = useCallback(
     (patch: Partial<Resume>) => {
+      if (files.busy) return;
+      if (files.active) {
+        files.active.edit(patch);
+        return;
+      }
       setSaved(false);
       setResumes((items) =>
         items.map((x) => (x.id === activeId ? { ...x, ...patch, updatedAt: Date.now() } : x))
       );
     },
-    [activeId]
+    [activeId, files.active, files.busy]
   );
   const updateSettings = (patch: Partial<Settings>) =>
     update({ settings: { ...settings, ...patch } });
@@ -215,6 +226,7 @@ export default function App() {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
         save();
+        void files.save();
       }
     };
     const onLeave = () => {
@@ -231,7 +243,7 @@ export default function App() {
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('pagehide', onLeave);
     };
-  }, [save, resumes, activeId]);
+  }, [save, resumes, activeId, files.active]);
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(''), 2800);
@@ -279,38 +291,34 @@ export default function App() {
     },
   });
   const exportMd = () => {
-    const url = URL.createObjectURL(
-      new Blob([resume.content], { type: 'text/markdown;charset=utf-8' })
-    );
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${resume.title.replace(/[\\/:*?"<>|]/g, '-') || '简历'}.md`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 10000);
-    setModal(null);
-    notify('Markdown 已导出');
+    try {
+      downloadFile(
+        encodeResume(resume),
+        `${resume.title.replace(/[\\/:*?"<>|]/g, '-') || '简历'}.md`
+      );
+      setModal(null);
+      notify('完整 Markdown 简历已导出');
+    } catch (error) {
+      notify(error instanceof Error ? error.message : '导出失败');
+    }
   };
   const importMd = async (file: File | undefined) => {
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      notify('请选择小于 2 MB 的 Markdown 文件');
-      return;
-    }
     try {
+      checkFileSize(file);
       const content = await file.text();
-      const item = { ...createResume(file.name.replace(/\.(md|markdown|txt)$/i, '')), content };
+      const item = decodeResume(content, file.name.replace(/\.(md|markdown|txt)$/i, ''));
+      files.selectBrowser();
       setResumes((items) => [...items, item]);
       setActiveId(item.id);
       setPanel('content');
       setSaved(false);
       notify('已导入为一份新简历');
-    } catch {
-      notify('文件读取失败，请重试');
+    } catch (error) {
+      notify(error instanceof Error ? error.message : '文件读取失败，请重试');
     }
   };
-  const newDocument = (duplicate = false) => {
+  const newDocument = async (duplicate = false) => {
     const item = duplicate
       ? {
           ...resume,
@@ -323,12 +331,24 @@ export default function App() {
           content:
             '# 你的姓名\n求职意向 · 所在城市\n\n邮箱 · 电话\n\n## 关于我\n介绍你的经验与优势。\n\n## 工作经历\n### 公司名称 · 职位\n- 用具体成果描述你的工作。\n\n## 教育背景\n学校名称 · 专业 · 学历\n',
         };
+    if (files.record && files.canWrite) {
+      try {
+        await files.add(item);
+        setModal(null);
+        setPanel('content');
+        notify(duplicate ? '简历副本已保存到文件夹' : '新简历已保存到文件夹');
+        return;
+      } catch (error) {
+        notify(`文件写入失败，已保留为浏览器简历：${error instanceof Error ? error.message : ''}`);
+      }
+    }
+    files.selectBrowser();
     setResumes((items) => [...items, item]);
     setActiveId(item.id);
     setModal(null);
     setPanel('content');
     setSaved(false);
-    notify(duplicate ? '已创建简历副本' : '新简历已创建');
+    if (!files.record) notify(duplicate ? '已创建简历副本' : '新简历已创建');
   };
   const currentTemplate = templates.find((x) => x.id === settings.template)!;
   const wordCount = resume.content.replace(/[#*`|:\[\]()>-]/g, '').replace(/\s/g, '').length;
@@ -361,11 +381,31 @@ export default function App() {
           <input
             aria-label="简历名称"
             value={resume.title}
+            disabled={fileReadOnly || files.busy}
             onChange={(e) => update({ title: e.target.value })}
           />
-          <span className={`save-status ${saveError ? 'error' : ''}`}>
+          <span
+            className={`save-status ${files.active ? (['error', 'conflict'].includes(files.active.status) || files.permission !== 'granted' ? 'error' : '') : saveError ? 'error' : ''}`}
+            role="status"
+          >
             <span />
-            {saveError ? '保存失败，请导出备份' : saved ? '已保存到本地' : '保存中…'}
+            {files.active
+              ? files.permission !== 'granted'
+                ? '需要授权'
+                : !files.writer
+                  ? '只读 · 其他标签页正在写入'
+                  : {
+                      clean: '已保存到文件',
+                      dirty: '等待保存到文件…',
+                      saving: '正在写入文件…',
+                      conflict: '存在冲突',
+                      error: '保存失败，请下载备份',
+                    }[files.active.status]
+              : saveError
+                ? '浏览器保存失败，请导出备份'
+                : saved
+                  ? '仅保存在浏览器'
+                  : '保存中…'}
           </span>
         </div>
         <div className="header-actions">
@@ -380,6 +420,74 @@ export default function App() {
           </button>
         </div>
       </header>
+      {files.active &&
+        (files.active.status === 'conflict' || files.active.status === 'error' || fileLocked) && (
+          <div className="file-alert" role="alert">
+            <span>
+              <strong>{files.active.path}</strong> ·{' '}
+              {files.permission !== 'granted'
+                ? '需要重新授权，请打开「我的简历」恢复连接。'
+                : !files.writer
+                  ? '其他标签页正在写入；关闭该标签页后可在「我的简历」取得写入权限。'
+                  : files.active.status === 'conflict'
+                    ? '网页和磁盘版本都发生了修改，自动保存已暂停。'
+                    : files.active.error}
+            </span>
+            {files.active.status === 'conflict' && (
+              <div className="workspace-buttons">
+                <button
+                  className="button"
+                  disabled={!files.canWrite}
+                  onClick={() => void files.active?.resolve('disk')}
+                >
+                  使用磁盘版本
+                </button>
+                <button
+                  className="button"
+                  disabled={!files.canWrite}
+                  onClick={() => void files.active?.resolve('web')}
+                >
+                  使用网页版本
+                </button>
+                <button
+                  className="button"
+                  disabled={!files.canWrite}
+                  onClick={() =>
+                    void files.add(resume, true).catch((error) => notify(error.message))
+                  }
+                >
+                  网页版本另存副本
+                </button>
+              </div>
+            )}
+            {files.active.status === 'error' && (
+              <div className="workspace-buttons">
+                <button
+                  className="button"
+                  disabled={!files.canWrite}
+                  onClick={() => void files.active?.retry()}
+                >
+                  重新读取 / 重试保存
+                </button>
+                <button
+                  className="button"
+                  disabled={!files.canWrite}
+                  onClick={() =>
+                    void files.add(resume, true).catch((error) => notify(error.message))
+                  }
+                >
+                  另存副本
+                </button>
+              </div>
+            )}
+            <button className="button quiet" onClick={exportMd}>
+              下载网页备份
+            </button>
+            <button className="button quiet" onClick={() => setModal('documents')}>
+              我的简历
+            </button>
+          </div>
+        )}
       <div className="workspace">
         <nav className="rail" aria-label="编辑器导航">
           <div className="rail-top">
@@ -428,7 +536,11 @@ export default function App() {
               <span>模板</span>
             </button>
             <div className="rail-line" />
-            <button className="rail-item" onClick={() => fileInput.current?.click()}>
+            <button
+              className="rail-item"
+              disabled={files.busy}
+              onClick={() => fileInput.current?.click()}
+            >
               <ArrowUpFromLine size={20} />
               <span>导入</span>
             </button>
@@ -465,7 +577,12 @@ export default function App() {
           </div>
           {panel === 'content' ? (
             <>
-              <div className="format-bar" aria-label="格式工具栏">
+              <fieldset
+                className="format-bar edit-actions"
+                role="toolbar"
+                disabled={fileReadOnly || files.busy}
+                aria-label="格式工具栏"
+              >
                 <button
                   onClick={() => format('## ', '', '模块标题')}
                   title="二级标题"
@@ -544,11 +661,13 @@ export default function App() {
                 <button onClick={() => setModal('help')} title="语法指南" aria-label="语法指南">
                   <MoreHorizontal size={18} />
                 </button>
-              </div>
+              </fieldset>
               <div className="editor-body">
                 <CodeMirror
                   key={resume.id}
                   value={resume.content}
+                  editable={!fileReadOnly && !files.busy}
+                  readOnly={fileReadOnly || files.busy}
                   height="100%"
                   aria-label="Markdown 简历源码"
                   theme={editorTheme}
@@ -613,7 +732,7 @@ export default function App() {
               </div>
             </>
           ) : (
-            <div className="settings-body">
+            <fieldset className="settings-body edit-settings" disabled={fileReadOnly || files.busy}>
               <div className="settings-intro">
                 <span>DESIGN YOUR RESUME</span>
                 <h2>让表达，多一点个性。</h2>
@@ -741,7 +860,7 @@ export default function App() {
               >
                 恢复默认样式
               </button>
-            </div>
+            </fieldset>
           )}
         </section>
         <section className="preview-pane" aria-label="预览面板">
@@ -846,6 +965,7 @@ export default function App() {
               <button
                 className={`template-card ${settings.template === t.id ? 'selected' : ''}`}
                 key={t.id}
+                disabled={fileReadOnly || files.busy}
                 onClick={() => {
                   updateSettings({
                     template: t.id,
@@ -942,7 +1062,8 @@ export default function App() {
             <div className="help-note">
               ⌘ / Ctrl + B 加粗 · ⌘ / Ctrl + I 斜体 · ⌘ / Ctrl + S 保存
               <br />
-              内容自动保存在当前浏览器。导出 Markdown 可以备份与迁移。
+              未连接文件的简历保存在当前浏览器；连接文件夹后自动写回本地文件。 导出 Markdown
+              包含正文、样式、照片与图标。外部修改通常在页面前台约一秒内读取；冲突时需选择版本。
             </div>
           </div>
         </Modal>
@@ -953,11 +1074,21 @@ export default function App() {
           subtitle="每一份简历，都为下一次机会准备。"
           onClose={() => setModal(null)}
         >
+          <FileWorkspacePanel
+            workspace={files}
+            resume={resume}
+            onToast={notify}
+            onOpen={() => setModal(null)}
+          />
+          <h3 className="browser-documents-title">浏览器简历</h3>
           <div className="document-list">
             {resumes.map((x) => (
               <button
                 key={x.id}
+                disabled={files.busy}
                 onClick={() => {
+                  void files.active?.flush().catch((error) => notify(error.message));
+                  files.selectBrowser();
                   setActiveId(x.id);
                   setModal(null);
                 }}
@@ -971,18 +1102,60 @@ export default function App() {
                     {new Date(x.updatedAt).toLocaleDateString('zh-CN')} · 保存在此浏览器
                   </small>
                 </div>
-                {x.id === activeId && <Check size={18} />}
+                {!files.active && x.id === activeId && <Check size={18} />}
               </button>
             ))}
           </div>
           <div className="modal-actions">
-            <button className="button primary" onClick={() => newDocument()}>
+            <button
+              className="button primary"
+              disabled={files.busy || (!!files.record && !files.canWrite)}
+              onClick={() => void newDocument()}
+            >
               <Plus size={16} />
               新建简历
             </button>
-            <button className="button" onClick={() => newDocument(true)}>
+            <button
+              className="button"
+              disabled={files.busy || (!!files.record && !files.canWrite)}
+              onClick={() => void newDocument(true)}
+            >
               <Copy size={16} />
               复制当前简历
+            </button>
+          </div>
+        </Modal>
+      )}
+      {files.blocked && (
+        <Modal
+          title="文件暂时无法编辑"
+          subtitle={files.blocked.entry.path}
+          onClose={files.clearBlocked}
+        >
+          <p className="workspace-warning" role="alert">
+            {files.blocked.message}
+          </p>
+          <p>请在本地编辑器修复后重新打开；此文件尚未被修改。</p>
+          <div className="workspace-buttons">
+            <button
+              className="button"
+              onClick={() =>
+                void files
+                  .blocked!.entry.handle.getFile()
+                  .then((file) => downloadFile(file, file.name))
+                  .catch((error) => notify(error.message))
+              }
+            >
+              下载原文件
+            </button>
+            <button
+              className="button"
+              onClick={() => {
+                files.clearBlocked();
+                setModal('documents');
+              }}
+            >
+              返回我的简历
             </button>
           </div>
         </Modal>
@@ -1018,14 +1191,14 @@ export default function App() {
               </span>
               <div>
                 <strong>Markdown 源文件</strong>
-                <p>保存原始内容，随时继续编辑</p>
+                <p>正文、排版、照片与图标保存在同一个文件中</p>
               </div>
               <ArrowDownToLine size={19} />
             </button>
           </div>
           <p className="export-note">
-            PDF 使用 A4 纸张，包含照片与排版。建议关闭打印页眉页脚，并启用背景图形。Markdown
-            仅导出文字，不包含照片与样式设置。
+            PDF 使用 A4 纸张，包含照片与排版。建议关闭打印页眉页脚，并启用背景图形。Markdown 包含
+            YAML 配置，可完整备份并继续编辑。
           </p>
         </Modal>
       )}

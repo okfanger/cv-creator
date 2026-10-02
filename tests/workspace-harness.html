@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>本地文件同步验证</title>
+  </head>
+  <body>
+    <div
+      id="test-tools"
+      style="
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        z-index: 1000;
+        max-width: 550px;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 8px;
+      "
+    >
+      <details>
+        <summary>开发验证工具（仅浏览器沙盒测试文件）</summary>
+        <p id="fixture-status">准备沙盒文件…</p>
+        <textarea id="external-source" aria-label="外部文件内容"># 外部修改</textarea>
+        <button id="external-write">写入外部版本</button>
+        <button id="disk-read">读取磁盘版本</button>
+        <button id="seed-draft">模拟未保存草稿后刷新</button>
+        <pre
+          id="disk-source"
+          style="max-height: 200px; overflow: auto; white-space: pre-wrap"
+        ></pre>
+      </details>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="./workspace-harness.tsx"></script>
+  </body>
+</html>

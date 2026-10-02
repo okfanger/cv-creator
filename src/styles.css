@@ -1999,3 +1999,97 @@ a {
   opacity: 0.6;
   cursor: wait;
 }
+
+.file-workspace {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e1e5dd;
+}
+.file-workspace h3,
+.browser-documents-title {
+  font-size: 14px;
+  color: #365d4a;
+  margin: 16px 0 10px;
+}
+.file-workspace p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #727c70;
+}
+.workspace-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.workspace-buttons .button {
+  font-size: 12px;
+}
+.workspace-warning {
+  color: #a14e2e !important;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.file-list {
+  max-height: 240px;
+  overflow: auto;
+  margin: 12px 0;
+}
+.file-list strong {
+  overflow-wrap: anywhere;
+}
+.file-list button:disabled,
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.file-alert {
+  background: #fff6e7;
+  border-bottom: 1px solid #e9dac0;
+  padding: 10px 24px;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.file-alert > span {
+  display: block;
+}
+.file-alert .workspace-buttons {
+  display: inline-flex;
+  margin: 6px 10px 0 0;
+}
+.file-alert .button {
+  font-size: 12px;
+}
+.recovery-list {
+  max-height: 200px;
+  overflow: auto;
+}
+.recovery-list > div {
+  border-top: 1px solid #e1e5dd;
+  padding: 8px 0;
+}
+.recovery-list small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.document-info input:disabled {
+  opacity: 0.7;
+}
+.edit-actions,
+.edit-settings {
+  border: 0;
+  margin: 0;
+  min-width: 0;
+}
+.edit-actions {
+  border-bottom: 1px solid #f0f2ed;
+}
+.edit-actions:disabled button {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+@media print {
+  .file-alert {
+    display: none !important;
+  }
+}
