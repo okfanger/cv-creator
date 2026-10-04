@@ -1,0 +1,122 @@
+/* A separate minimal-theme derivative. The same selectors apply to the hidden
+   pagination measure and visible pages; no resume text is injected or replaced. */
+.template-ai-minimal {
+  --ai-ink: #26343b;
+  --ai-muted: #59676e;
+  --ai-rule: color-mix(in srgb, var(--resume-color) 25%, white);
+  --ai-soft: color-mix(in srgb, var(--resume-color) 5%, white);
+  --ai-code-font: Menlo, Consolas, 'PingFang SC', 'Microsoft YaHei', monospace;
+}
+.template-ai-minimal .resume-content,
+.resume-content.template-ai-minimal {
+  color: var(--ai-ink);
+}
+.template-ai-minimal h1 {
+  color: var(--ai-ink);
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+.template-ai-minimal h1 + p {
+  color: var(--resume-color);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.template-ai-minimal h2 {
+  position: relative;
+  color: var(--resume-color);
+  border-bottom: 1px solid var(--ai-rule);
+  padding-left: 11px;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+}
+.template-ai-minimal h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.22em;
+  width: 3px;
+  height: 0.95em;
+  border-radius: 1px;
+  background: var(--resume-color);
+}
+.template-ai-minimal h3 {
+  color: var(--ai-ink);
+  font-weight: 700;
+  break-after: avoid;
+}
+/* An existing labelled paragraph immediately after a project title becomes
+   its metadata row (e.g. technology stack); it remains selectable text. */
+.template-ai-minimal h3 + p:has(> strong:first-child) {
+  padding: 5px 9px;
+  background: var(--ai-soft);
+  border-left: 2px solid var(--ai-rule);
+  border-radius: 0 3px 3px 0;
+  font-size: 0.94em;
+}
+.template-ai-minimal strong {
+  color: var(--ai-ink);
+  font-weight: 700;
+}
+.template-ai-minimal li > strong:first-child,
+.template-ai-minimal li > p > strong:first-child,
+.template-ai-minimal p > strong:first-child {
+  color: var(--resume-color);
+}
+.template-ai-minimal .column-right {
+  color: var(--ai-muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92em;
+}
+.template-ai-minimal a {
+  border-bottom-color: var(--ai-rule);
+  text-underline-offset: 3px;
+}
+.template-ai-minimal code {
+  font-family: var(--ai-code-font);
+  background: var(--ai-soft);
+  border: 1px solid var(--ai-rule);
+  padding: 0 4px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.template-ai-minimal pre {
+  font-family: var(--ai-code-font);
+  background: var(--ai-soft);
+  border: 1px solid var(--ai-rule);
+  border-radius: 4px;
+}
+.template-ai-minimal pre code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.template-ai-minimal blockquote {
+  color: var(--ai-muted);
+}
+.template-ai-minimal th {
+  color: var(--resume-color);
+  border-bottom: 1px solid var(--ai-rule);
+}
+.template-ai-minimal td {
+  border-bottom: 1px solid var(--ai-soft);
+}
+.template-ai-minimal .page-number {
+  color: var(--ai-muted);
+  font-family: var(--ai-code-font);
+  font-variant-numeric: tabular-nums;
+}
+.mini-ai-minimal strong {
+  color: #26343b;
+  letter-spacing: 0.5px;
+}
+.mini-ai-minimal small {
+  color: var(--mini-color);
+}
+.mini-ai-minimal b {
+  border-bottom-color: color-mix(in srgb, var(--mini-color) 25%, white);
+  border-left: 2px solid var(--mini-color);
+  padding-left: 4px;
+}
+.mini-ai-minimal .mini-rule {
+  background: color-mix(in srgb, var(--mini-color) 25%, white);
+}

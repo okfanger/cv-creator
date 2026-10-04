@@ -35,7 +35,7 @@ All settings below live under `qingjian.settings`. Missing fields use the defaul
 
 | Key | Accepted value | Default |
 | --- | --- | --- |
-| `template` | `minimal`, `classic`, `modern`, `editorial`, `technical`, `formal` | `minimal` |
+| `template` | `minimal`, `ai-minimal`, `classic`, `modern`, `editorial`, `technical`, `formal` | `minimal` |
 | `color` | Quoted six-digit hexadecimal color | `'#2c584b'` |
 | `fontSize` | Number, 10–18 px | `13` |
 | `lineHeight` | Number, 1–2.5 multiplier | `1.7` |
@@ -53,6 +53,7 @@ The template chooser applies the following template, color and font together. Ag
 | ID | Name | Presentation | Suggested color | Suggested font |
 | --- | --- | --- | --- | --- |
 | `minimal` | 自然简约 | Left-aligned name, fine section rules | `'#2c584b'` | `sans` |
+| `ai-minimal` | 自然简约 · AI 工程 | Minimal derivative with project metadata rows, clear contribution labels and restrained teal rules | `'#245c63'` | `sans` |
 | `classic` | 经典书页 | Centered identity, strong section rules | `'#373b45'` | `serif` |
 | `modern` | 现代蓝调 | Top accent, shaded sections with left rules | `'#3b64a3'` | `sans` |
 | `editorial` | 编辑雅致 | Serif name, page-edge accent, inset section headings | `'#8a5a46'` | `sans` |
