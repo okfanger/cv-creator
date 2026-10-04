@@ -3,6 +3,7 @@ import type { IconLibrary } from './icons';
 
 export const templateIds = [
   'minimal',
+  'ai-minimal',
   'classic',
   'modern',
   'editorial',
@@ -165,6 +166,14 @@ export const templates: {
     description: '清晰层次，让内容自己说话',
     tag: '当前推荐',
     color: '#2c584b',
+    font: 'sans',
+  },
+  {
+    id: 'ai-minimal',
+    name: '自然简约 · AI 工程',
+    description: '强化技术栈与项目层次，适合 AI / Agent 工程岗位',
+    tag: '简约副本',
+    color: '#245c63',
     font: 'sans',
   },
   {
