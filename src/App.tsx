@@ -1021,6 +1021,23 @@ export default function App() {
           onClose={() => setModal(null)}
         >
           <div className="help-content">
+            <p>
+              <a href={`${import.meta.env.BASE_URL}about.html`} target="_blank" rel="noreferrer">
+                轻简介绍
+              </a>
+              {' · '}
+              <a
+                href={`${import.meta.env.BASE_URL}docs/ai-workflow.zh-CN.html`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                AI 文件工作流
+              </a>
+              {' · '}
+              <a href="https://github.com/okfanger/cv-creator" target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+            </p>
             <div className="syntax-row">
               <span>姓名 / 求职意向</span>
               <code># 你的姓名</code>

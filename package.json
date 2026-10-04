@@ -1,26 +1,35 @@
 {
   "name": "cv-creator",
   "version": "1.0.0",
-  "description": "A local-first Markdown resume editor",
+  "description": "Qingjian: a local-first Markdown resume editor with live A4 preview, PDF export, and local file sync.",
   "main": "index.js",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "check:site": "tsx scripts/check-site.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/okfanger/cv-creator.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "resume-builder",
+    "cv",
+    "markdown",
+    "local-first",
+    "pdf",
+    "react",
+    "typescript"
+  ],
+  "author": "okfanger",
   "license": "ISC",
   "type": "module",
   "bugs": {
     "url": "https://github.com/okfanger/cv-creator/issues"
   },
-  "homepage": "https://github.com/okfanger/cv-creator#readme",
+  "homepage": "https://okfanger.github.io/cv-creator/",
   "dependencies": {
     "@codemirror/commands": "^6.11.1",
     "@codemirror/lang-markdown": "^6.5.2",

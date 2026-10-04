@@ -2,6 +2,16 @@
 
 > A local-first resume editor. A portable resume is one UTF-8 Markdown file containing optional YAML frontmatter and a Markdown body. This document defines the implemented `qingjian.version: 1` dialect for third-party agents.
 
+## Product and workflow
+
+Qingjian is a local-first Markdown resume editor / CV builder with live A4 preview and browser PDF printing. The UI is Simplified Chinese. Desktop Chrome / Edge can synchronize an authorized local folder; unsupported browsers can import and download files. No AI model or MCP server is embedded. See the guides below before using an external assistant to edit a resume.
+
+- [Product overview](https://okfanger.github.io/cv-creator/about.html)
+- [AI-assisted local-file workflow](https://okfanger.github.io/cv-creator/docs/ai-workflow.md)
+- [Browser, privacy, and conflict FAQ](https://okfanger.github.io/cv-creator/docs/faq.md)
+- [PDF export](https://okfanger.github.io/cv-creator/docs/pdf-export.md)
+- [Fictional complete resume](https://okfanger.github.io/cv-creator/examples/developer-resume.md)
+
 ## References
 
 - [Project README](https://github.com/okfanger/cv-creator/blob/main/README.md): editor features, file synchronization and export instructions.

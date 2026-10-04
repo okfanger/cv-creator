@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="Qingjian">
+<rect width="72" height="72" rx="18" fill="#2c584b"/>
+<path d="M22 19h22l7 7v27H22z" fill="#fbfaf5"/>
+<path d="M44 19v8h7" fill="none" stroke="#b8d0c1" stroke-width="2"/>
+<path d="M29 33h15M29 40h15M29 47h10" stroke="#2c584b" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

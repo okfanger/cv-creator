@@ -1,0 +1,37 @@
+name: Bug report / 问题反馈
+description: Report a reproducible editor, print, or file-sync problem.
+labels: [bug]
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce / 复现步骤
+      description: Include a small fictional Markdown example; remove private data.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual result / 预期与实际结果
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: OS and browser version / 系统与浏览器版本
+    validations:
+      required: true
+  - type: dropdown
+    id: storage
+    attributes:
+      label: Storage mode / 存储方式
+      options:
+        - Browser-only / 仅浏览器
+        - Native folder picker / 原生文件夹
+        - OPFS development fixture / 开发沙盒
+        - Not applicable / 不涉及
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshot or relevant error / 截图或错误
+      description: Do not include real resumes, credentials, or private paths.

@@ -27,6 +27,8 @@ jobs:
       - run: npm run build
         env:
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/cv-creator/' }}
+          VITE_SITE_URL: ${{ vars.VITE_SITE_URL || 'https://okfanger.github.io/cv-creator/' }}
+      - run: npm run check:site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
