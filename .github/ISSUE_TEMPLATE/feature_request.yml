@@ -1,0 +1,20 @@
+name: Feature proposal / 功能建议
+description: Describe a user problem and a bounded improvement.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem / 用户问题
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior and scope / 建议行为与范围
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Existing workaround or alternatives / 当前办法与替代方案
