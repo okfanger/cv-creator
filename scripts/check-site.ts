@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, resolve, sep } from 'node:path';
 import MarkdownIt from 'markdown-it';
 import { parseResumeFile } from '../src/resumeFile';
 
@@ -31,7 +31,7 @@ for (const file of walk(dist).filter((file) => file.endsWith('.html'))) {
     const target = path.startsWith('/')
       ? resolve(dist, path.slice(buildBase.length))
       : resolve(dirname(file), path);
-    assert.ok(target.startsWith(dist + '/') || target === dist, `Link escapes site: ${link}`);
+    assert.ok(target.startsWith(dist + sep) || target === dist, `Link escapes site: ${link}`);
     assert.ok(existsSync(target), `Broken site link ${link} in ${file}`);
     checked++;
   }
