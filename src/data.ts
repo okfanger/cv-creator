@@ -17,6 +17,7 @@ export type Settings = {
   color: string;
   fontSize: number;
   lineHeight: number;
+  bodySpacing: number;
   margin: number;
   font: 'sans' | 'serif' | 'heiti' | 'kaiti' | 'mono';
   onePage: boolean;
@@ -77,6 +78,7 @@ export const defaults: Settings = {
   color: '#2c584b',
   fontSize: 13,
   lineHeight: 1.7,
+  bodySpacing: 1,
   margin: 48,
   font: 'sans',
   onePage: false,

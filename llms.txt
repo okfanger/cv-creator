@@ -49,6 +49,7 @@ All settings below live under `qingjian.settings`. Missing fields use the defaul
 | `color` | Quoted six-digit hexadecimal color | `'#2c584b'` |
 | `fontSize` | Number, 10–18 px | `13` |
 | `lineHeight` | Number, 1–2.5 multiplier | `1.7` |
+| `bodySpacing` | Number, 0–2 multiplier of the default spacing between body paragraphs and lists | `1` |
 | `margin` | Number, 24–72 px on all four sides | `48` |
 | `font` | `sans`, `heiti`, `serif`, `kaiti`, `mono` | `sans` |
 | `onePage` | Boolean | `false` |
@@ -152,6 +153,7 @@ qingjian:
     font: mono
     fontSize: 13
     lineHeight: 1.5
+    bodySpacing: 1
     margin: 40
     onePage: false
     headings:

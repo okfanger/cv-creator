@@ -35,6 +35,7 @@ export default function Preview({
     '--resume-color': settings.color,
     '--resume-font-size': `${settings.fontSize}px`,
     '--resume-line-height': settings.lineHeight,
+    '--resume-body-spacing': settings.bodySpacing,
     '--resume-margin': `${settings.margin}px`,
     fontFamily: (fonts.find((font) => font.id === settings.font) || fonts[0]).family,
   } as CSSProperties;

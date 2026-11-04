@@ -1,6 +1,6 @@
 {
   "name": "cv-creator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Qingjian: a local-first Markdown resume editor with live A4 preview, PDF export, and local file sync.",
   "main": "index.js",
   "scripts": {

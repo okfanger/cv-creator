@@ -12,6 +12,7 @@ test('complete Markdown roundtrip keeps body, layout, photo, and icons in one fi
   const resume = createResume('完整简历');
   resume.content = '# 姓名\n\n::: left\n经历\n:::\n';
   resume.settings.headings.h2.before = 0;
+  resume.settings.bodySpacing = 0.5;
   resume.photo = {
     source: 'data:image/jpeg;base64,YWJj',
     name: '照片.jpg',
@@ -107,6 +108,8 @@ test('bad YAML, duplicate keys, future versions, and invalid structures block wr
     'qingjian:\n  version: 1\n  settings: false',
     'qingjian:\n  version: 1\n  settings:\n    template: unknown',
     'qingjian:\n  version: 1\n  settings:\n    lineHeight: .nan',
+    'qingjian:\n  version: 1\n  settings:\n    bodySpacing: 2.5',
+    'qingjian:\n  version: 1\n  settings:\n    bodySpacing: -0.1',
     'qingjian:\n  version: 1\n  settings:\n    headings:\n      h2: nope',
     'qingjian:\n  version: 1\n  photo:\n    source: https://example.com/photo.jpg',
     'qingjian:\n  version: 1\n  iconLibrary:\n    source: javascript:bad',
@@ -124,6 +127,7 @@ test('empty header and partial valid settings gain defaults', () => {
     '---\nqingjian:\n  version: 1\n  settings:\n    fontSize: 15\n---\nbody'
   );
   assert.equal(resume.settings.fontSize, 15);
+  assert.equal(resume.settings.bodySpacing, 1);
   assert.equal(resume.settings.template, 'minimal');
   assert.ok(serializeResumeFile(parseResumeFile('---\n---\nbody')).includes('version: 1'));
 });

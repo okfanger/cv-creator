@@ -564,7 +564,7 @@ a {
 .resume-content h1 + p {
   font-size: 14px;
   color: #65716a;
-  margin: 0 0 13px;
+  margin: 0 0 calc(var(--resume-body-spacing) * 13px);
   letter-spacing: 0.6px;
 }
 .resume-content h2 {
@@ -591,16 +591,16 @@ a {
   break-after: avoid;
 }
 .resume-content p {
-  margin: 5px 0 10px;
+  margin: calc(var(--resume-body-spacing) * 5px) 0 calc(var(--resume-body-spacing) * 10px);
 }
 .resume-content ul,
 .resume-content ol {
   padding-left: 18px;
-  margin: 6px 0 12px;
+  margin: calc(var(--resume-body-spacing) * 6px) 0 calc(var(--resume-body-spacing) * 12px);
 }
 .resume-content li {
   padding-left: 2px;
-  margin: 3px 0;
+  margin: calc(var(--resume-body-spacing) * 3px) 0;
 }
 .resume-content li::marker {
   color: var(--resume-color);
@@ -844,18 +844,18 @@ a {
 .resume-content blockquote {
   border-left: 2px solid var(--resume-color);
   padding-left: 12px;
-  margin: 10px 0;
+  margin: calc(var(--resume-body-spacing) * 10px) 0;
   color: #7a857b;
 }
 .resume-content hr {
   border: 0;
   border-top: 1px solid #dfe5dc;
-  margin: 18px 0;
+  margin: calc(var(--resume-body-spacing) * 18px) 0;
 }
 .resume-content table {
   border-collapse: collapse;
   width: 100%;
-  margin: 8px 0 12px;
+  margin: calc(var(--resume-body-spacing) * 8px) 0 calc(var(--resume-body-spacing) * 12px);
 }
 .resume-content th,
 .resume-content td {

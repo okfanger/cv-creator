@@ -39,6 +39,7 @@ function settingsFrom(value: unknown): Settings {
   for (const [key, min, max] of [
     ['fontSize', 10, 18],
     ['lineHeight', 1, 2.5],
+    ['bodySpacing', 0, 2],
     ['margin', 24, 72],
   ] as const) {
     if (
